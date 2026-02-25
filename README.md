@@ -1,3 +1,6 @@
+![SQL](https://img.shields.io/badge/lang-SQL-blue)
+![dbt Style](https://img.shields.io/badge/dbt%20style-yes-green)
+
 # Monetization & Activation Analytics Framework
 
 End-to-end analytics engineering project demonstrating scalable transformation layers, dimensional modeling, and KPI-ready marts to support monetization, activation, and measurement workflows.
@@ -11,6 +14,21 @@ End-to-end analytics engineering project demonstrating scalable transformation l
 - **Data quality testing** (uniqueness, not null)  
 - Warehouse concepts compatible with Snowflake / BigQuery / Postgres
 
+---
+## Data Dictionary (Key Columns)
+
+**raw_users**
+- user_id
+- signup_ts
+- signup_channel
+
+**raw_orders**
+- order_id, user_id, campaign_id, order_ts
+
+**raw_order_items**
+- order_id, product_id, quantity, unit_price, discount_usd
+
+(…similar for campaigns/products)
 ---
 
 ## Business Use Cases
@@ -85,64 +103,50 @@ Defines documentation + tests (dbt-style), including:
 
 ---
 
-## Key Models (What to Look At)
+## Key Models
 
-### Core Facts
-- **`fct_orders`**
-  - Grain: **one row per order**
-  - Includes: user, timestamp, campaign, status
+### **Dimension Tables**
+- `dim_users`  
+- `dim_products`  
+- `dim_campaigns`
 
-- **`fct_order_items`**
-  - Grain: **one row per product per order**
-  - Includes revenue logic:
-    - `gross_revenue_usd = quantity * unit_price`
-    - `net_revenue_usd = gross_revenue_usd - discount_usd`
+### **Fact Tables**
+- `fct_orders`  
+- `fct_order_items`  
+  - Includes **gross & net revenue logic**
 
-### KPI Marts
-- **`mart_campaign_performance`**
-  - Orders, purchasers, net revenue, AOV
-  - ROAS proxy = `net_revenue_usd / budget_usd`
-
-- **`mart_user_activation`**
-  - Activation definition: **2+ completed orders**
-  - `days_to_second_order` measures activation speed
-
-- **`mart_product_monetization`**
-  - Net revenue, units sold, unique buyers
-  - Repeat buyers = users purchasing a product in **2+ orders**
+### **KPI Marts**
+- `mart_campaign_performance` — campaign revenue, purchases, AOV, ROAS proxy  
+- `mart_user_activation` — activation and repeat behavior  
+- `mart_product_monetization` — revenue drivers + repeat buyers
 
 ---
 
-## Data Quality & Governance
-This repo includes:
-- **Primary key tests** (`unique`, `not_null`)
-- **Standardized business logic** in shared transformation layers
-- **Clear model grains** (order-level vs line-item-level)
-- KPI logic built on trusted fact tables (prevents metric drift)
+## Data Quality
+Included basic `unique` and `not_null` tests in `models/schema.yml`:
+- Ensures PK integrity for dims and facts
+- Validates core attribute expectations
 
 ---
 
-## How to Use (Portfolio / Demo)
-This is a portfolio project, so you can:
-1. Review `data/raw_setup.sql` to understand the source layer
-2. Follow the dependency chain:
-   - `staging/` → `core/` → `marts/`
-3. Open the marts to see the final KPI outputs
+## Usage Notes
+1. Populate raw tables with `data/raw_setup.sql`  
+2. Run transformations in dependency order:
+   staging → core → marts  
+3. Review KPI marts for business insights
 
 ---
 
 ## Future Enhancements
-Possible next steps (if extending the project):
-- Incremental materializations for large fact tables
-- Stronger referential integrity tests
-- BI layer (Looker/Power BI mock dashboard)
-- Campaign attribution logic and cohort retention tables
-- Cost/performance optimization notes (partitioning/clustering patterns)
+- Incremental strategy for large tables  
+- Referential integrity constraints  
+- BI dashboard design (Looker/Power BI mockups)  
+- Cohort metrics & time-based retention analysis
 
 ---
 
 ## Author
 **Victor Epuna**  
-Analytics Engineer | Monetization, Activation & Measurement  
+Analytics Engineer — monetization, activation & measurement  
 LinkedIn: https://www.linkedin.com/in/victor-epuna-9905a2210  
 Email: victor.epunae@gmail.com
