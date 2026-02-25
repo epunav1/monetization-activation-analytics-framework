@@ -1,37 +1,35 @@
 # Monetization & Activation Analytics Framework
 
-End-to-end Analytics Engineering portfolio project demonstrating scalable transformation layers, dimensional modeling (star schema), data quality checks, and KPI-ready marts for **monetization, activation, and measurement** workflows.
-
-This repo is intentionally structured in a **dbt-style** layout (staging → core → marts) to mirror how modern analytics engineering teams build reliable, reusable data assets.
+End-to-end analytics engineering project demonstrating scalable transformation layers, dimensional modeling, and KPI-ready marts to support monetization, activation, and measurement workflows.
 
 ---
 
-## Tech Stack (Portfolio Focus)
-- **SQL** (primary)
-- **dbt-style modeling** (`ref()`-based dependencies)
-- **Dimensional modeling** (facts + dimensions)
-- **Data quality testing** (uniqueness, not-null, basic integrity)
-
-> Note: The project uses **simulated raw data** to avoid confidentiality issues and keep the focus on modeling, transformations, and KPI logic.
+## Tech Stack
+- **SQL**  
+- **dbt-style modeling** (`ref()`-based modular transforms)  
+- **Dimensional modeling** (facts + dimensions)  
+- **Data quality testing** (uniqueness, not null)  
+- Warehouse concepts compatible with Snowflake / BigQuery / Postgres
 
 ---
 
 ## Business Use Cases
-This framework supports common monetization + activation questions such as:
+This project supports analytics questions like:
 - Which campaigns drive the most revenue and purchasers?
-- What is average order value (AOV) by campaign/channel?
-- How quickly do users become “activated” (2nd purchase)?
-- Which products/categories drive repeat purchasing and revenue?
+- How effectively does budget translate into revenue (ROAS proxy)?
+- What is the activation rate (users with 2+ orders)?
+- Which products/categories generate the most repeat buyers?
 
 ---
 
 ## Architecture
-**Raw → Staging → Core → Marts**
 
-- **Raw**: source-like tables representing transactional and marketing data  
-- **Staging**: standardizes column names/types, handles nulls, normalizes formats  
-- **Core**: star schema (facts + dimensions) as the trusted foundation  
-- **Marts**: KPI-ready models used for dashboards, reporting, and decision making
+**Raw → Staging → Core (Star Schema) → Marts (KPIs)**
+
+- **Raw** — source-like raw tables
+- **Staging** — cleaning + standardizing source layer
+- **Core** — star schema (dims + facts)
+- **Marts** — KPI-ready analytics outputs
 
 ---
 
